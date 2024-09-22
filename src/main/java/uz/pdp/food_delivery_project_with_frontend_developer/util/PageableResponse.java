@@ -5,14 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class PageableResponse {
+public class PageableResponse<T> {
     private Long total;
     private Integer current;
     private Integer totalPages;
     private Integer perPages;
+    private List<T> data;
 }
 

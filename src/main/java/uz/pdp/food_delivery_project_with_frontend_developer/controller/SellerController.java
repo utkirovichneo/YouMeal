@@ -12,6 +12,7 @@ import uz.pdp.food_delivery_project_with_frontend_developer.entity.RestaurantLog
 import uz.pdp.food_delivery_project_with_frontend_developer.service.SellerService;
 import uz.pdp.food_delivery_project_with_frontend_developer.util.AuthRequestDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.util.AuthResponseDTO;
+import uz.pdp.food_delivery_project_with_frontend_developer.util.PageableRequest;
 import uz.pdp.food_delivery_project_with_frontend_developer.util.ResponseDTO;
 
 import java.util.List;
@@ -20,30 +21,26 @@ import java.util.List;
 @RequestMapping("/api/seller/")
 public record SellerController(SellerService service) {
 
-    // TODO
-    @PostMapping("/login")
-    public ResponseEntity<ResponseDTO<AuthResponseDTO>> login(@RequestBody AuthRequestDTO dto) {
-        return ResponseDTO.ok();
-    }
-
-    // TODO
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO<SellerDTO>> register(@RequestBody SellerRequestDTO dto) {
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(service.register(dto));
     }
 
-    // TODO
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDTO<AuthResponseDTO>> login(@RequestBody AuthRequestDTO dto) {
+        return ResponseDTO.ok(service.login(dto));
+    }
+
     @GetMapping("/restaurant/get/{sellerId}/{restaurantId}")
     public ResponseEntity<ResponseDTO<RestaurantDTO>> getRestaurant(@PathVariable("restaurantId") Long restaurantId,
                                                                     @PathVariable("sellerId") Long sellerId) {
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(service.getRestaurant(sellerId, restaurantId));
     }
 
-    // TODO
     @PostMapping("/restaurant/create/{sellerId}")
     public ResponseEntity<ResponseDTO<RestaurantDTO>> createRestaurant(@RequestBody RestaurantRequestDTO dto,
                                                                        @PathVariable("sellerId") Long sellerId) {
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(service.createRestaurant(sellerId, dto));
     }
 
     // TODO
@@ -54,10 +51,15 @@ public record SellerController(SellerService service) {
         return ResponseDTO.ok();
     }
 
-    // TODO
+    @PostMapping("/restaurant/filter/{sellerId}")
+    public ResponseEntity<ResponseDTO<List<RestaurantDTO>>> getAllRestaurants(@PathVariable("sellerId") Long sellerId,
+                                                                              @RequestBody PageableRequest pageable) {
+        return ResponseDTO.page(service.getSellerRestaurants(sellerId, pageable));
+    }
+
     @PostMapping("/restaurant/filter")
-    public ResponseEntity<ResponseDTO<List<RestaurantDTO>>> getAllRestaurants() {
-        return ResponseDTO.page(null);
+    public ResponseEntity<ResponseDTO<List<RestaurantDTO>>> getAllRestaurants(@RequestBody PageableRequest pageable) {
+        return ResponseDTO.page(service.getRestaurants(pageable));
     }
 
     // TODO
