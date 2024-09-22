@@ -3,6 +3,7 @@ package uz.pdp.food_delivery_project_with_frontend_developer.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantDTO;
+import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantNameUpdateDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantRequestDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurantlogo.RestaurantLogoDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurantlogo.RestaurantLogoRequestDTO;
@@ -43,12 +44,11 @@ public record SellerController(SellerService service) {
         return ResponseDTO.ok(service.createRestaurant(sellerId, dto));
     }
 
-    // TODO
     @PutMapping("/restaurant/update/{sellerId}/{restaurantId}")
-    public ResponseEntity<ResponseDTO<RestaurantDTO>> updateRestaurant(@RequestBody RestaurantRequestDTO dto,
+    public ResponseEntity<ResponseDTO<RestaurantDTO>> updateRestaurant(@RequestBody RestaurantNameUpdateDTO dto,
                                                                        @PathVariable("restaurantId") Long restaurantId,
                                                                        @PathVariable("sellerId") Long sellerId) {
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(service.updateRestaurant(sellerId, restaurantId, dto));
     }
 
     @PostMapping("/restaurant/filter/{sellerId}")

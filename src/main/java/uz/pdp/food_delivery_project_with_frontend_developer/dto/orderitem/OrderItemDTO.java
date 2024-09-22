@@ -9,5 +9,4 @@ public class OrderItemDTO {
     private Long productId;
     private String productName;
     private String quantity;
-    private double totalAmount;
 }

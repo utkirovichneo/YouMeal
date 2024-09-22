@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.pdp.food_delivery_project_with_frontend_developer.config.service.JWTService;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantDTO;
+import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantNameUpdateDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantRequestDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.seller.SellerDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.seller.SellerRequestDTO;
@@ -153,5 +154,12 @@ public class SellerServiceImp implements SellerService {
                         pageable.getPerPage()
                 ),
                 restaurantDTOS.size());
+    }
+
+    @Override
+    public RestaurantDTO updateRestaurant(Long sellerId, Long restaurantId, RestaurantNameUpdateDTO dto) {
+        var restaurant = restaurantRepository.findByIdAndSellerId(restaurantId, sellerId).orElseThrow(() -> new NotFoundException("Restaran topilmadi"));
+            restaurant.setName(dto.getName());
+                return restaurantMapper.toDto(restaurantRepository.save(restaurant));
     }
 }

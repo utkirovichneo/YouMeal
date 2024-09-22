@@ -2,6 +2,7 @@ package uz.pdp.food_delivery_project_with_frontend_developer.service;
 
 import org.springframework.data.domain.Page;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantDTO;
+import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantNameUpdateDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantRequestDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.seller.SellerDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.seller.SellerRequestDTO;
@@ -22,5 +23,7 @@ public interface SellerService {
     Page<RestaurantDTO> getSellerRestaurants(Long sellerId, PageableRequest pageable);
 
     Page<RestaurantDTO> getRestaurants(PageableRequest pageable);
+
+    RestaurantDTO updateRestaurant(Long sellerId, Long restaurantId, RestaurantNameUpdateDTO dto);
 
 }

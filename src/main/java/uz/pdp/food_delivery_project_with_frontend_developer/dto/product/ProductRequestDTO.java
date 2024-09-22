@@ -14,5 +14,4 @@ public class ProductRequestDTO {
     private double calories;
     private Long productTypeId;
     private Set<String> ingredients;
-    private Long restaurantId;
 }

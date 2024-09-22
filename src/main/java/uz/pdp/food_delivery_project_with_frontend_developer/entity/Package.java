@@ -7,22 +7,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import uz.pdp.food_delivery_project_with_frontend_developer.entity.base.BaseEntity;
+import uz.pdp.food_delivery_project_with_frontend_developer.enums.PackageStatus;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
-@SuperBuilder(toBuilder = true)
-public class OrderItem extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+@Getter
+@SuperBuilder
+@Table(name = "a_package")
+public class Package extends BaseEntity {
+
+    @OneToOne
+    @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @ManyToOne
+    @JoinColumn(name = "courier_id")
+    private DeliveryPerson person;
 
-    @Column(nullable = false)
-    private int quantity;
+    private PackageStatus status;
 }

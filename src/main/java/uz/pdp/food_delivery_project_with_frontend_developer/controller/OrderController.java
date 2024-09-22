@@ -12,49 +12,43 @@ import uz.pdp.food_delivery_project_with_frontend_developer.util.ResponseDTO;
 @RequestMapping("/api/order/")
 public record OrderController(OrderService service) {
 
-    // TODO
     @GetMapping("/order-item/get/{customerId}/{orderItemId}")
     public ResponseEntity<ResponseDTO<OrderItemDTO>> get(@PathVariable("customerId") Long customerId,
                                                          @PathVariable("orderItemId") Long orderItemId){
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(service.get(customerId, orderItemId));
     }
 
-    // TODO
     @PostMapping("/order-item/add/{customerId}")
     public ResponseEntity<ResponseDTO<OrderItemDTO>> add(@RequestParam OrderItemRequestDTO dto,
                                                          @PathVariable("customerId") Long customerId){
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(service.add(customerId, dto));
     }
 
-    // TODO
     @PutMapping("/order-item/update/{customerId}/{orderItemId}")
     public ResponseEntity<ResponseDTO<OrderItemDTO>> update(@PathVariable("customerId") Long customerId,
-                                                            @PathVariable("orderItemId") Long orderItemId){
-        return ResponseDTO.ok();
+                                                            @PathVariable("orderItemId") Long orderItemId,
+                                                            @RequestBody OrderItemRequestDTO dto){
+        return ResponseDTO.ok(service.update(customerId, orderItemId, dto));
     }
 
-    // TODO
     @DeleteMapping("/order-item/delete/{customerId}/{orderItemId}")
-    public ResponseEntity<ResponseDTO<OrderItemDTO>> delete(@PathVariable("customerId") Long customerId,
+    public ResponseEntity<ResponseDTO<Boolean>> delete(@PathVariable("customerId") Long customerId,
                                                             @PathVariable("orderItemId") Long orderItemId){
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(service.delete(customerId, orderItemId));
     }
 
-    // TODO
     @GetMapping("/get/{customerId}")
     public ResponseEntity<ResponseDTO<OrderDTO>> getOrder(@PathVariable("customerId") Long customerId){
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(service.get(customerId));
     }
 
-    // TODO
     @PutMapping("/confirm/{customerId}")
     public ResponseEntity<ResponseDTO<Boolean>> confirm(@PathVariable("customerId") Long customerId){
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(service.confirm(customerId));
     }
 
-    // TODO
     @PutMapping("/reject/{customerId}")
     public ResponseEntity<ResponseDTO<Boolean>> reject(@PathVariable("customerId") Long customerId){
-        return ResponseDTO.ok();
+        return ResponseDTO.ok(service.reject(customerId));
     }
 }
