@@ -6,6 +6,6 @@ import lombok.*;
 @Setter
 public class LocationDTO {
     private Long id;
-    private Long latitude;
-    private Long longitude;
+    private Double latitude;
+    private Double longitude;
 }

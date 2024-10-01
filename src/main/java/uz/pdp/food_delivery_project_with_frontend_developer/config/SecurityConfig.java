@@ -32,6 +32,12 @@ public class SecurityConfig {
     private final String [] WHITE_LIST = new String[]{
             "/api/auth/login",
             "/api/auth/register",
+            "/api/customer/login",
+            "/api/customer/register",
+            "/api/delivery/login",
+            "/api/delivery/register",
+            "/api/seller/login",
+            "/api/seller/register",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html"};
@@ -50,13 +56,16 @@ public class SecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable);
 
+        http.cors(cors->
+                cors.configurationSource(corsConfigurationSource()));
+
         http.sessionManagement(sessionManagement ->
                 sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                        .requestMatchers(WHITE_LIST)
+                        .requestMatchers("/**")
                         .permitAll()
                         .anyRequest()
                         .fullyAuthenticated());
@@ -91,6 +100,7 @@ public class SecurityConfig {
             configuration.setAllowedOriginPatterns(List.of("*"));
                 configuration.setAllowedHeaders(List.of("*"));
                     configuration.setAllowedMethods(List.of("*"));
+                        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
             source.registerCorsConfiguration("/**", configuration);
                 return source;
@@ -104,7 +114,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .requestMatchers(WHITE_LIST); // Swagger static resources
+                .requestMatchers("/**"); // Swagger static resources
     }
 
     @Bean

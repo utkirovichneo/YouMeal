@@ -10,25 +10,31 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import uz.pdp.food_delivery_project_with_frontend_developer.config.service.JWTService;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantNameUpdateDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurant.RestaurantRequestDTO;
+import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurantlogo.RestaurantLogoDTO;
+import uz.pdp.food_delivery_project_with_frontend_developer.dto.restaurantlogo.RestaurantLogoRequestDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.seller.SellerDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.seller.SellerRequestDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.entity.*;
 import uz.pdp.food_delivery_project_with_frontend_developer.enums.SellerStatus;
 import uz.pdp.food_delivery_project_with_frontend_developer.exception.NotFoundException;
+import uz.pdp.food_delivery_project_with_frontend_developer.mapper.RestaurantLogoMapper;
 import uz.pdp.food_delivery_project_with_frontend_developer.mapper.RestaurantMapper;
 import uz.pdp.food_delivery_project_with_frontend_developer.mapper.SellerMapper;
 import uz.pdp.food_delivery_project_with_frontend_developer.repository.*;
 import uz.pdp.food_delivery_project_with_frontend_developer.service.SellerService;
+import uz.pdp.food_delivery_project_with_frontend_developer.service.s3.S3Service;
 import uz.pdp.food_delivery_project_with_frontend_developer.util.AuthRequestDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.util.AuthResponseDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.util.PageableRequest;
 import uz.pdp.food_delivery_project_with_frontend_developer.util.UtilService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -46,6 +52,9 @@ public class SellerServiceImp implements SellerService {
     private final AddressRepository addressRepository;
     private final RestaurantRepository restaurantRepository;
     private final RestaurantMapper restaurantMapper;
+    private final S3Service s3Service;
+    private final RestaurantLogoRepository restaurantLogoRepository;
+    private final RestaurantLogoMapper restaurantLogoMapper;
 
     @Override
     public SellerDTO register(SellerRequestDTO dto) {
@@ -161,5 +170,67 @@ public class SellerServiceImp implements SellerService {
         var restaurant = restaurantRepository.findByIdAndSellerId(restaurantId, sellerId).orElseThrow(() -> new NotFoundException("Restaran topilmadi"));
             restaurant.setName(dto.getName());
                 return restaurantMapper.toDto(restaurantRepository.save(restaurant));
+    }
+
+    @Override
+    public RestaurantLogoDTO upload(Long sellerId, Long restaurantId, MultipartFile logoPicture) {
+
+        var restaurant = restaurantRepository
+                .findByIdAndSellerId(restaurantId, sellerId)
+                .orElseThrow(() -> new NotFoundException("Restaurant not found"));
+
+        Map<String, String> file = s3Service.uploadFile(logoPicture);
+
+        var fileName = file.get("fileName");
+            var prefix = file.get("prefix");
+                var url = file.get("url");
+
+        var logo = restaurantLogoRepository.save(
+                RestaurantLogo.builder()
+                        .name(fileName)
+                        .prefix(prefix)
+                        .url(url)
+                        .restaurant(restaurant)
+                        .build()
+        );
+
+        return restaurantLogoMapper.toDto(logo);
+    }
+
+    @Override
+    public String url(Long restaurantId) {
+        return restaurantLogoRepository
+                .findByRestaurantId(restaurantId)
+                .orElseThrow(() -> new NotFoundException("Logo not found"))
+                .getUrl();
+    }
+
+    @Override
+    public RestaurantLogoDTO update(Long sellerId, Long restaurantId, MultipartFile logoPicture) {
+
+        var logo = restaurantLogoRepository
+                .findByRestaurantId(restaurantId)
+                .orElseThrow(() -> new NotFoundException("Logo not found"));
+
+        Map<String, String> file = s3Service.uploadFile(logoPicture);
+        var fileName = file.get("fileName");
+        var prefix = file.get("prefix");
+        var url = file.get("url");
+        logo.setName(fileName);
+        logo.setPrefix(prefix);
+        logo.setUrl(url);
+        return restaurantLogoMapper.toDto(restaurantLogoRepository.save(logo));
+
+    }
+
+    @Override
+    public Page<RestaurantDTO> getAllRestaurants(PageableRequest pageable) {
+        var list = restaurantRepository.findAll();
+            var restaurantDTOS = restaurantMapper.toDto(list);
+            return new PageImpl<>(restaurantDTOS,
+                PageRequest.of(
+                        pageable.getPage(),
+                        pageable.getPerPage()),
+                list.size());
     }
 }

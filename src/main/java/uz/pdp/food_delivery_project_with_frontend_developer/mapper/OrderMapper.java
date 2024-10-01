@@ -7,5 +7,21 @@ import uz.pdp.food_delivery_project_with_frontend_developer.mapper.base.EntityMa
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
-public interface OrderMapper extends EntityMapper<OrderDTO, Order> {}
+@Mapper(componentModel = "spring", uses = {
+    CustomerMapper.class,
+        ProductMapper.class
+})
+public interface OrderMapper extends EntityMapper<OrderDTO, Order> {
+    @Override
+    Order toEntity(OrderDTO dto);
+
+    @Override
+    @Mapping(target = "customerId", source = "customer.id")
+    OrderDTO toDto(Order entity);
+
+    @Override
+    List<Order> toEntity(List<OrderDTO> list);
+
+    @Override
+    List<OrderDTO> toDto(List<Order> list);
+}

@@ -77,7 +77,8 @@ public class ResponseDTO<T> {
                                 pageContent.getTotalElements(),
                                 pageContent.getNumber(),
                                 pageContent.getTotalPages(),
-                                pageContent.getPageable().getPageSize()
+                                pageContent.getPageable().getPageSize(),
+                                List.of()
                         )
                 )
         );

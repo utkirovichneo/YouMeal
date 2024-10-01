@@ -23,10 +23,12 @@ public class OpenApiConfig {
                         .title("PDP Online Java")
                         .version("1")
                         .contact(new Contact()
-                                .name("Ruzimbayev To'lqin")
-                                .email("ruzimbayevtolqin@gmail.com")
-                                .url("https://github.com/utkirovichneo")))
+                                .name("To'lik Utkirovich telegram page")
+                                .url("https://t.me/tolik_2107")
+                        )
+                )
                 .servers(List.of(
+                        new Server().url("http://13.60.232.175:8080").description("Production Server"),
                         new Server().url("http://localhost:8080").description("Local Server")
                 ))
                 .addSecurityItem(new SecurityRequirement().addList("basicAuth").addList("bearerAuth"))

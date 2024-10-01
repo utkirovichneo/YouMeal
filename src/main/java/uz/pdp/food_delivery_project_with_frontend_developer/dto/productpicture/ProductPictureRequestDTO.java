@@ -6,5 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 public class ProductPictureRequestDTO {
-    private MultipartFile picture;
+    private Long productId;
+    private Long restaurantId;
 }

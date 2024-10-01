@@ -1,6 +1,5 @@
 package uz.pdp.food_delivery_project_with_frontend_developer.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,9 +16,7 @@ import uz.pdp.food_delivery_project_with_frontend_developer.entity.base.BaseEnti
 @SuperBuilder
 public class Location extends BaseEntity {
 
-    @Column(nullable = false)
-    private Long latitude;
+    private Double latitude;
 
-    @Column(nullable = false)
-    private Long longitude;
+    private Double longitude;
 }

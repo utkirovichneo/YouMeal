@@ -2,6 +2,7 @@ package uz.pdp.food_delivery_project_with_frontend_developer.service.imp;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.order.OrderDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.dto.orderitem.OrderItemDTO;
@@ -18,8 +19,13 @@ import uz.pdp.food_delivery_project_with_frontend_developer.mapper.OrderMapper;
 import uz.pdp.food_delivery_project_with_frontend_developer.repository.*;
 import uz.pdp.food_delivery_project_with_frontend_developer.service.OrderService;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderServiceImp implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -117,7 +123,10 @@ public class OrderServiceImp implements OrderService {
             if(order == null){
                 throw new NotFoundException("Order not found");
             }
-        return orderMapper.toDto(order);
+        var orderDTO = orderMapper.toDto(order);
+            List<OrderItemDTO> dto = orderItemMapper.toDto(orderItemRepository.findAllByOrderId(order.getId()));
+                 orderDTO.setOrderItems(new HashSet<>(dto));
+        return orderDTO;
     }
 
     @Override

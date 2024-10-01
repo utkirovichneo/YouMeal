@@ -6,8 +6,8 @@ import lombok.*;
 @Setter
 public class LocationRequestDTO {
 
-    private Long latitude;
+    private Double latitude;
 
-    private Long longitude;
+    private Double longitude;
 
 }

@@ -19,6 +19,7 @@ import uz.pdp.food_delivery_project_with_frontend_developer.enums.PaymentStatus;
 import uz.pdp.food_delivery_project_with_frontend_developer.enums.PaymentType;
 import uz.pdp.food_delivery_project_with_frontend_developer.exception.NotFoundException;
 import uz.pdp.food_delivery_project_with_frontend_developer.mapper.CustomerMapper;
+import uz.pdp.food_delivery_project_with_frontend_developer.mapper.OrderItemMapperImpl;
 import uz.pdp.food_delivery_project_with_frontend_developer.mapper.OrderMapper;
 import uz.pdp.food_delivery_project_with_frontend_developer.repository.*;
 import uz.pdp.food_delivery_project_with_frontend_developer.service.CustomerService;
@@ -26,6 +27,7 @@ import uz.pdp.food_delivery_project_with_frontend_developer.util.AuthRequestDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.util.AuthResponseDTO;
 import uz.pdp.food_delivery_project_with_frontend_developer.util.PageableRequest;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -43,6 +45,8 @@ public class CustomerImp implements CustomerService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final PaymentRepository paymentRepository;
+    private final OrderItemMapperImpl orderItemMapper;
+    private final OrderItemRepository orderItemRepository;
 
     @Override
     public CustomerDTO register(CustomerRequestDTO dto) {
@@ -109,7 +113,12 @@ public class CustomerImp implements CustomerService {
     public Page<OrderDTO> getOrders(PageableRequest pageable, Long customerId) {
         var orders = orderRepository.findAllByCustomerId(customerId);
             var orderDTOs = orderMapper.toDto(orders);
-                return new PageImpl<>(
+            orderDTOs.forEach(orderDTO ->
+                orderDTO
+                        .setOrderItems(new HashSet<>(
+                                orderItemMapper.toDto(orderItemRepository.findAllByOrderId(orderDTO.getId())))));
+
+        return new PageImpl<>(
                         orderDTOs,
                         PageRequest.of(
                                 pageable.getPage(),

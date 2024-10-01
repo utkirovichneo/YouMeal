@@ -12,6 +12,6 @@ public class OrderDTO {
     private Long id;
     private Long customerId;
     private Set<OrderItemDTO> orderItems;
-    private double totalPrice;
+    private double totalAmount;
     private OrderStatus status;
 }
